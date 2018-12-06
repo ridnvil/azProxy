@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/back"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_keyboard_arrow_left_black_24dp"
+        android:title="back" />
+    <item
+        android:id="@+id/tabMode"
+        app:showAsAction="withText"
+        android:icon="@drawable/ic_star_border_black_24dp"
+        android:title="Like Us" />
+    <item
+        android:id="@+id/forword"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_keyboard_arrow_right_black_24dp"
+        android:title="forword" />
+    <item
+        android:id="@+id/refresh"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_refresh_black_24dp"
+        android:title="refresh" />
+</menu>
