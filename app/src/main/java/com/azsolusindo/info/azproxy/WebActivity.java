@@ -54,12 +54,11 @@ public class WebActivity extends AppCompatActivity{
     String LoIP, OS, Brow, DeviceName;
     Map<String, String> params = new HashMap<>();
 
-    Bundle bundle;
-
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        bundle = savedInstanceState;
+
+        enableProxy();
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_web);
@@ -79,17 +78,7 @@ public class WebActivity extends AppCompatActivity{
                 //postDataToServer();
                 url = txtUrl.getText().toString();
 
-                if (url.equals("https://qq28800.com")){
-                    enableProxy();
-                    progressBar.setVisibility(View.VISIBLE);
-                    webViewWithProxy(url);
-                    Log.w("Coba", String.valueOf(WebViewProxy.isUsingProxy(webView.getContext())));
-                }else{
-                    disableProxy();
-                    Log.w("Coba","false");
-                    progressBar.setVisibility(View.VISIBLE);
-                    webViewNoProxy(url);
-                }
+                webViewWithProxy(url);
 
                 Log.w("URL",url);
 
@@ -218,6 +207,7 @@ public class WebActivity extends AppCompatActivity{
         //webView.loadUrl(webAdress);
         if(WebViewProxy.isUsingProxy(getApplicationContext())){
             webView.loadUrl(webAdress);
+            Log.w("Coba", webAdress);
         }
     }
 

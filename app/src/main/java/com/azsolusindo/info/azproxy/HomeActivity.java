@@ -70,14 +70,7 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(HomeActivity.this,"Disconnected Proxy", Toast.LENGTH_SHORT).show();
                 btnCon.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.disconnectBtn)));
 
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        WebViewProxy.setDisabled(getApplicationContext());
-                        Log.w(this.getClass().getName() , String.valueOf(WebViewProxy.isUsingProxy(getApplicationContext())));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
             }
         });
     }
@@ -101,8 +94,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void WorkerViewActivity(){
-        Intent workerIntent = new Intent(HomeActivity.this, WorkerActivity.class);
-        startActivity(workerIntent);
+        Intent intent = new Intent(HomeActivity.this, TestingLayout.class);
+        startActivity(intent);
     }
 
     private void WebViewActivity(){
