@@ -6,4 +6,68 @@
     android:layout_height="match_parent"
     tools:context=".TestingLayout">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.ActionBarContainer
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:padding="5dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/txtUrlTesting"
+                    android:hint="URL"
+                    android:background="@drawable/border"
+                    android:inputType="textUri"
+                    android:layout_weight="7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <ImageButton
+                    android:id="@+id/btnGoo"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_search_black_24dp"
+                    android:layout_width="wrap_content"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+                <ImageButton
+                    android:id="@+id/backBtn"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_keyboard_arrow_left_black_24dp"
+                    android:layout_width="wrap_content"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+                <ImageButton
+                    android:id="@+id/forwardBtn"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_keyboard_arrow_right_black_24dp"
+                    android:layout_width="wrap_content"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+                <ImageButton
+                    android:id="@+id/btnRefresh"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_refresh_black_24dp"
+                    android:layout_width="wrap_content"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </android.support.v7.widget.ActionBarContainer>
+
+        <RelativeLayout
+            android:id="@+id/relatifFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <fragment
+                android:id="@+id/fragmentWeb"
+                android:name="com.azsolusindo.info.azproxy.Webview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </fragment>
+        </RelativeLayout>
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

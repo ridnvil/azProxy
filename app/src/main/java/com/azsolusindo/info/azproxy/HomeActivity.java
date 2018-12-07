@@ -70,7 +70,6 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(HomeActivity.this,"Disconnected Proxy", Toast.LENGTH_SHORT).show();
                 btnCon.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.disconnectBtn)));
 
-
             }
         });
     }

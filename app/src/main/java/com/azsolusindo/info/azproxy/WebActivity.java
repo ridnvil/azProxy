@@ -38,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.net.ssl.SSLServerSocket;
 
@@ -58,7 +59,6 @@ public class WebActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        enableProxy();
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_web);
@@ -78,7 +78,11 @@ public class WebActivity extends AppCompatActivity{
                 //postDataToServer();
                 url = txtUrl.getText().toString();
 
-                webViewWithProxy(url);
+                if (url.equals("https://qq28800.com")){
+                    webViewWithProxy(url);
+                }else{
+                    webViewNoProxy(url);
+                }
 
                 Log.w("URL",url);
 
@@ -151,10 +155,18 @@ public class WebActivity extends AppCompatActivity{
     }
 
     public void webViewWithProxy(String webAdress){
+        Properties proper = System.getProperties();
+        proper.setProperty("http.proxyHost", host);
+        proper.setProperty("http.proxyPort", port+"");
+        proper.setProperty("https.proxyHost", host);
+        proper.setProperty("https.proxyPort", port+"");
+
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowContentAccess(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         //webView.getSettings().setDomStorageEnabled(true);
+        System.setProperty("http.proxyHost", host);
+        System.setProperty("http.proxyPort", port+"");
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
@@ -212,6 +224,14 @@ public class WebActivity extends AppCompatActivity{
     }
 
     public void webViewNoProxy(String webAdress){
+        Properties proper = System.getProperties();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            proper.remove("http.proxyHost");
+            proper.remove("http.proxyPort");
+            proper.remove("https.proxyHost");
+            proper.remove("https.proxyPort");
+        }
+
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowContentAccess(true);
         webView.getSettings().setLoadWithOverviewMode(true);
