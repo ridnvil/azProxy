@@ -6,4 +6,5 @@
     <color name="connectBtn">#1ea930</color>
     <color name="disconnectBtn">#f72828</color>
     <color name="primaryBtn">#096fff</color>
+    <color name="EditText">#b6b7b7</color>
 </resources>

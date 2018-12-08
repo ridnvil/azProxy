@@ -32,7 +32,8 @@
         <activity
             android:name=".WorkerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".WebActivity" />
+        <activity android:name=".WebActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".TestingLayout"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>

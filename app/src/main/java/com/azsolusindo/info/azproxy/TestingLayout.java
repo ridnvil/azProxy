@@ -18,10 +18,12 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+
 import java.util.Properties;
 
 public class TestingLayout extends AppCompatActivity {
-    ImageButton btnGo;
+
+    ImageButton btnGo, btnBack,btnForward;
     Fragment fragment;
     String host = "139.162.44.129";
     int port = 80;
@@ -29,7 +31,7 @@ public class TestingLayout extends AppCompatActivity {
     static String link;
 
     FrameLayout frameLayout;
-    EditText urlTextTesting;
+    public static EditText urlTextTesting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,9 @@ public class TestingLayout extends AppCompatActivity {
         setContentView(R.layout.activity_testing_layout);
 
         btnGo = findViewById(R.id.btnGoo);
+        btnBack = findViewById(R.id.backBtn);
+        btnForward = findViewById(R.id.forwardBtn);
+
         urlTextTesting = findViewById(R.id.txtUrlTesting);
 
 
@@ -45,39 +50,20 @@ public class TestingLayout extends AppCompatActivity {
             public void onClick(View v) {
                 address = urlTextTesting.getText().toString();
 
-                if(address.equals("http://qq10100.com")){
-                    Webview.URL = address;
-                    fragmentWithProxy();
-                    Log.w("PROXY", "With Proxy");
-                }else{
-                    WebviewNoProxy.URL = address;
-                    fragmentNoProxy();
-                    Log.w("PROXY", "NO Proxy");
-                }
+            }
+        });
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-    }
 
-    public void fragmentWithProxy(){
-        FragmentManager fragMan = getSupportFragmentManager();
-        FragmentTransaction fragTrans = fragMan.beginTransaction();
-        fragment = new Webview();
-        fragTrans.replace(R.id.relatifFragment, fragment);
-        fragTrans.commit();
-    }
-
-    public void fragmentNoProxy(){
-        FragmentManager fragMan = getSupportFragmentManager();
-        FragmentTransaction fragTrans = fragMan.beginTransaction();
-        fragment = new WebviewNoProxy();
-        fragTrans.replace(R.id.relatifFragment, fragment);
-        fragTrans.commit();
     }
 
 }

@@ -93,7 +93,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void WorkerViewActivity(){
-        Intent intent = new Intent(HomeActivity.this, TestingLayout.class);
+        Intent intent = new Intent(HomeActivity.this, WorkerActivity.class);
         startActivity(intent);
     }
 

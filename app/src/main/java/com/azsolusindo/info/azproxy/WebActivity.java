@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class WebActivity extends AppCompatActivity{
     static String host = "139.162.44.129";
     static int port = 80;
     String url;
+    LinearLayout layoutWebView;
     EditText txtUrl;
     ImageButton btnGo;
     ImageView logoUrl;
@@ -63,12 +65,14 @@ public class WebActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_web);
 
-        frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
-        progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        webView = (WebView)findViewById(R.id.webView);
-        txtUrl = (EditText)findViewById(R.id.editUrl);
-        btnGo = (ImageButton)findViewById(R.id.goBtn);
-        logoUrl = (ImageView)findViewById(R.id.logoUrl);
+        layoutWebView = findViewById(R.id.layoutWebView);
+        frameLayout =  findViewById(R.id.frameLayout);
+        progressBar = findViewById(R.id.progressBar);
+        webView = findViewById(R.id.webView);
+        txtUrl = findViewById(R.id.editUrl);
+        btnGo = findViewById(R.id.goBtn);
+
+        frameLayout.setVisibility(View.GONE);
 
         progressBar.setMax(100);
 
@@ -78,9 +82,11 @@ public class WebActivity extends AppCompatActivity{
                 //postDataToServer();
                 url = txtUrl.getText().toString();
 
-                if (url.equals("https://qq28800.com")){
+                if (url.equals("http://qq28800.com")){
+                    enableProxy();
                     webViewWithProxy(url);
                 }else{
+                    disableProxy();
                     webViewNoProxy(url);
                 }
 
@@ -104,7 +110,7 @@ public class WebActivity extends AppCompatActivity{
             case R.id.back:
                 onBackPressed();
                 break;
-            case R.id.forword:
+            case R.id.forward:
                 onForwardPressed();
                 break;
             case R.id.refresh:
@@ -134,40 +140,18 @@ public class WebActivity extends AppCompatActivity{
     }
 
     public void enableProxy(){
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                WebViewProxy.setEnabled(getBaseContext(), host, port);
-                Log.w(this.getClass().getName() , String.valueOf(WebViewProxy.isUsingProxy(getApplicationContext())));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.setProperty("http.proxyHost", host);
+        System.setProperty("http.proxyPort", port+"");
     }
 
     public void disableProxy(){
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                WebViewProxy.setDisabled(getBaseContext());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.setProperty("http.proxyHost", "");
+        System.setProperty("http.proxyPort", "");
     }
 
     public void webViewWithProxy(String webAdress){
-        Properties proper = System.getProperties();
-        proper.setProperty("http.proxyHost", host);
-        proper.setProperty("http.proxyPort", port+"");
-        proper.setProperty("https.proxyHost", host);
-        proper.setProperty("https.proxyPort", port+"");
 
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setAllowContentAccess(true);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        //webView.getSettings().setDomStorageEnabled(true);
-        System.setProperty("http.proxyHost", host);
-        System.setProperty("http.proxyPort", port+"");
-        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
@@ -197,18 +181,6 @@ public class WebActivity extends AppCompatActivity{
             public void onProgressChanged(WebView view, int progress){
                 frameLayout.setVisibility(View.VISIBLE);
                 progressBar.setProgress(progress);
-            }
-
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-                getSupportActionBar().setTitle(title);
-            }
-
-            @Override
-            public void onReceivedIcon(WebView view, Bitmap icon) {
-                super.onReceivedIcon(view, icon);
-                logoUrl.setImageBitmap(icon);
             }
 
 //            public void onGeolocationPermissionsPromp(String origin, GeolocationPermissions.Callback callback){
@@ -216,27 +188,13 @@ public class WebActivity extends AppCompatActivity{
 //            }
         });
         webView.setVerticalScrollBarEnabled(false);
-        //webView.loadUrl(webAdress);
-        if(WebViewProxy.isUsingProxy(getApplicationContext())){
-            webView.loadUrl(webAdress);
-            Log.w("Coba", webAdress);
-        }
+        webView.loadUrl(webAdress);
+
     }
 
     public void webViewNoProxy(String webAdress){
-        Properties proper = System.getProperties();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            proper.remove("http.proxyHost");
-            proper.remove("http.proxyPort");
-            proper.remove("https.proxyHost");
-            proper.remove("https.proxyPort");
-        }
 
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setAllowContentAccess(true);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        //webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
@@ -250,6 +208,7 @@ public class WebActivity extends AppCompatActivity{
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
+                frameLayout.setVisibility(View.VISIBLE);
                 progressBar.setProgress(0);
             }
 
@@ -267,18 +226,6 @@ public class WebActivity extends AppCompatActivity{
             public void onProgressChanged(WebView view, int progress){
                 frameLayout.setVisibility(View.VISIBLE);
                 progressBar.setProgress(progress);
-            }
-
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-                getSupportActionBar().setTitle(title);
-            }
-
-            @Override
-            public void onReceivedIcon(WebView view, Bitmap icon) {
-                super.onReceivedIcon(view, icon);
-                logoUrl.setImageBitmap(icon);
             }
 
             public void onGeolocationPermissionsPromp(String origin, GeolocationPermissions.Callback callback){

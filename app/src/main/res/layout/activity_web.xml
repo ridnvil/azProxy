@@ -1,65 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".WebActivity">
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:layout_gravity="right|center"
-            android:id="@+id/logoUrl"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_weight="1" />
-        <EditText
-            android:id="@+id/editUrl"
-            android:layout_width="270dp"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.ActionBarContainer
+            android:scrollbarAlwaysDrawVerticalTrack="true"
             android:layout_height="wrap_content"
-            android:hint="URL"
-            android:textColorHighlight="#7cff88"
-            android:inputType="textUri"
-            android:layout_weight="7" />
-        <ImageButton
-            android:id="@+id/goBtn"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="left|center"
-            android:layout_weight="1"
-            android:focusable="true"
-            android:clickable="true"
-            android:background="@drawable/ic_search_black_24dp" />
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:background="@android:color/transparent"
-        android:layout_height="8dp"
-        android:orientation="vertical">
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent">
+            <LinearLayout
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/editUrl"
+                    android:hint="URL"
+                    android:background="@drawable/border"
+                    android:inputType="textUri"
+                    android:layout_weight="7"
+                    android:layout_marginRight="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <ImageButton
+                    android:id="@+id/goBtn"
+                    android:background="@drawable/border"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_search_black_24dp"
+                    android:layout_width="wrap_content"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </android.support.v7.widget.ActionBarContainer>
+        <FrameLayout
+            android:id="@+id/frameLayout"
             android:layout_width="match_parent"
+            android:background="@android:color/transparent"
             android:layout_height="8dp"
-            android:progressDrawable="@drawable/custom_progress"
-            android:layout_marginTop="-3dp"/>
+            android:orientation="vertical">
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:progressDrawable="@drawable/custom_progress"
+                android:layout_marginTop="-3dp"/>
 
-    </FrameLayout>
-    <WebView
-            android:id="@+id/webView"
-            android:layout_below="@+id/frameLayout"
+        </FrameLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/layoutWebView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-    </WebView>
-</LinearLayout>
+            <WebView
+                    android:id="@+id/webView"
+                    android:layout_below="@+id/frameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+            </WebView>
+        </LinearLayout>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
