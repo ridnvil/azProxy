@@ -264,7 +264,7 @@ public class WebActivity extends AppCompatActivity{
 
             @Override
             public void onError(@NotNull Exception e) {
-
+                Log.w("Send Data","Error send Data");
             }
         });
     }
