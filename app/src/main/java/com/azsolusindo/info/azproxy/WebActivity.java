@@ -1,24 +1,27 @@
 package com.azsolusindo.info.azproxy;
 
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.opengl.Visibility;
-import android.os.Build;
 
+import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.GeolocationPermissions;
+import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
@@ -33,15 +36,13 @@ import com.subisakah.hideqlib.ApiResponse;
 import com.subisakah.hideqlib.DeviceInformation;
 import com.subisakah.hideqlib.InfoKey;
 import com.subisakah.hideqlib.ServerLog;
-import com.subisakah.hideqlib.WebViewProxy;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
-import javax.net.ssl.SSLServerSocket;
+import static android.app.PendingIntent.getActivity;
 
 public class WebActivity extends AppCompatActivity{
     WebView webView;
@@ -50,7 +51,7 @@ public class WebActivity extends AppCompatActivity{
     String url;
     LinearLayout layoutWebView;
     EditText txtUrl;
-    ImageButton btnGo;
+    ImageButton btnGo, stopBtn;
     ImageView logoUrl;
     ProgressBar progressBar;
     FrameLayout frameLayout;
@@ -60,7 +61,7 @@ public class WebActivity extends AppCompatActivity{
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        enableProxy();
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_web);
@@ -71,10 +72,15 @@ public class WebActivity extends AppCompatActivity{
         webView = findViewById(R.id.webView);
         txtUrl = findViewById(R.id.editUrl);
         btnGo = findViewById(R.id.goBtn);
+        stopBtn = findViewById(R.id.stopBtn);
+
+        registerForContextMenu(webView);
 
         frameLayout.setVisibility(View.GONE);
 
         progressBar.setMax(100);
+
+        CeckConnectivity();
 
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,42 +88,55 @@ public class WebActivity extends AppCompatActivity{
                 //postDataToServer();
                 url = txtUrl.getText().toString();
 
-                if (url.equals("http://qq28800.com")){
-                    enableProxy();
-                    webViewWithProxy(url);
-                }else{
-                    disableProxy();
-                    webViewNoProxy(url);
-                }
+                webViewProxy(buildUrl(url));
 
-                Log.w("URL",url);
-
+                Log.w("URL",buildUrl(url));
             }
+
         });
 
+        stopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webView.stopLoading();
+                frameLayout.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void CeckConnectivity(){
+        ConnectivityManager cm = (ConnectivityManager) getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            webView.loadUrl("https://www.google.com/");
+        } else {
+            webView.setVisibility(View.GONE);
+        }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.webmenu,menu);
-        return super.onCreateOptionsMenu(menu);
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        getMenuInflater().inflate(R.menu.webmenu,menu);
+    }
+
+    public String buildUrl(String uri){
+        if (uri.startsWith("http://")  || uri.startsWith("https://"))
+            return uri;
+        return "http://".concat(uri);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.back:
-                onBackPressed();
-                break;
-            case R.id.forward:
-                onForwardPressed();
-                break;
             case R.id.refresh:
                 webView.reload();
-                break;
+            case R.id.forward:
+                onForwardPressed();
+                return true;
         }
-        return super.onOptionsItemSelected(item);
+        return super.onContextItemSelected(item);
     }
 
     private void onForwardPressed(){
@@ -125,7 +144,7 @@ public class WebActivity extends AppCompatActivity{
         if (webView.canGoForward()){
             webView.goForward();
         }else{
-            Toast.makeText(this, "Can't go Forward!", Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -149,60 +168,25 @@ public class WebActivity extends AppCompatActivity{
         System.setProperty("http.proxyPort", "");
     }
 
-    public void webViewWithProxy(String webAdress){
+    public void webViewProxy(String webAdress){
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ONLY);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(false);
 
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(false);
-
-        webView.setWebViewClient(new WebViewClient(){
+        webView.setLongClickable(true);
+        webView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                progressBar.setProgress(0);
+            public boolean onLongClick(View v) {
+                Log.w("Coba", "Ini Long Click");
+                return false;
             }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                progressBar.setVisibility(View.GONE);
-                txtUrl.setText(url);
-            }
-
         });
-
-        webView.setWebChromeClient(new WebChromeClient(){
-            @Override
-            public void onProgressChanged(WebView view, int progress){
-                frameLayout.setVisibility(View.VISIBLE);
-                progressBar.setProgress(progress);
-            }
-
-//            public void onGeolocationPermissionsPromp(String origin, GeolocationPermissions.Callback callback){
-//                callback.invoke(origin, true, false);
-//            }
-        });
-        webView.setVerticalScrollBarEnabled(false);
-        webView.loadUrl(webAdress);
-
-    }
-
-    public void webViewNoProxy(String webAdress){
-
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setDisplayZoomControls(false);
-
-        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-        webView.setScrollbarFadingEnabled(false);
-
 
         webView.setWebViewClient(new WebViewClient(){
             @Override
@@ -215,13 +199,19 @@ public class WebActivity extends AppCompatActivity{
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                progressBar.setVisibility(View.GONE);
+                frameLayout.setVisibility(View.GONE);
                 txtUrl.setText(url);
             }
 
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String uri) {
+                //return super.shouldOverrideUrlLoading(view, uri);
+                view.loadUrl(uri);
+                return true;
+            }
         });
 
-        webView.setWebChromeClient(new WebChromeClient(){
+        webView.setWebChromeClient(new MyWebView(){
             @Override
             public void onProgressChanged(WebView view, int progress){
                 frameLayout.setVisibility(View.VISIBLE);
@@ -236,6 +226,7 @@ public class WebActivity extends AppCompatActivity{
         webView.setVerticalScrollBarEnabled(false);
         webView.loadUrl(webAdress);
     }
+
 
     public void postDataToServer(){
 
@@ -274,4 +265,44 @@ public class WebActivity extends AppCompatActivity{
             }
         });
     }
+
+    private class MyWebView extends WebChromeClient{
+        private View mCustomView;
+        private WebChromeClient.CustomViewCallback mCustomViewCallback;
+        protected FrameLayout mFullscreenContainer;
+        private int mOriginalOrientation;
+        private int mOriginalSystemUiVisibility;
+
+        MyWebView(){}
+
+        public Bitmap getDefaultVideoPoster(){
+            if (mCustomView == null){
+                return null;
+            }
+            return BitmapFactory.decodeResource(getApplicationContext().getResources(), 2130837573);
+        }
+
+        public void onHideCustomView(){
+            ((FrameLayout)getWindow().getDecorView()).removeView(this.mCustomView);
+            this.mCustomView = null;
+            getWindow().getDecorView().setSystemUiVisibility(this.mOriginalSystemUiVisibility);
+            setRequestedOrientation(this.mOriginalOrientation);
+            this.mCustomViewCallback.onCustomViewHidden();
+            this.mCustomViewCallback = null;
+        }
+
+        public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback){
+            if(this.mCustomView != null){
+                onHideCustomView();
+                return;
+            }
+            this.mCustomView = paramView;
+            this.mOriginalSystemUiVisibility = getWindow().getDecorView().getSystemUiVisibility();
+            this.mOriginalOrientation = getRequestedOrientation();
+            this.mCustomViewCallback = paramCustomViewCallback;
+            ((FrameLayout)getWindow().getDecorView()).addView(this.mCustomView, new FrameLayout.LayoutParams(-1,-1));
+            getWindow().getDecorView().setSystemUiVisibility(3846);
+        }
+    }
+
 }

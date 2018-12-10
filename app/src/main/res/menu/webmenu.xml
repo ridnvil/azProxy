@@ -7,15 +7,7 @@
         android:icon="@drawable/ic_refresh_black_24dp"
         android:title="Refresh" />
     <item
-        android:id="@+id/back"
-        android:icon="@drawable/ic_keyboard_arrow_left_black_24dp"
-        android:title="Back" />
-    <item
         android:id="@+id/forward"
         android:icon="@drawable/ic_keyboard_arrow_right_black_24dp"
         android:title="Forward" />
-    <item
-         android:id="@+id/tabMode"
-         android:icon="@drawable/ic_star_border_black_24dp"
-         android:title="Like Us" />
 </menu>
