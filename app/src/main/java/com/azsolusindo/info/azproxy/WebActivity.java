@@ -30,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.subisakah.hideqlib.ApiResponse;
@@ -54,6 +55,7 @@ public class WebActivity extends AppCompatActivity{
     ImageButton btnGo, stopBtn;
     ImageView logoUrl;
     ProgressBar progressBar;
+    RelativeLayout webViewNoConnection;
     FrameLayout frameLayout;
     String LoIP, OS, Brow, DeviceName;
     Map<String, String> params = new HashMap<>();
@@ -70,6 +72,7 @@ public class WebActivity extends AppCompatActivity{
         frameLayout =  findViewById(R.id.frameLayout);
         progressBar = findViewById(R.id.progressBar);
         webView = findViewById(R.id.webView);
+        webViewNoConnection = findViewById(R.id.webViewNoConnection);
         txtUrl = findViewById(R.id.editUrl);
         btnGo = findViewById(R.id.goBtn);
         stopBtn = findViewById(R.id.stopBtn);
@@ -77,6 +80,7 @@ public class WebActivity extends AppCompatActivity{
         registerForContextMenu(webView);
 
         frameLayout.setVisibility(View.GONE);
+        webViewNoConnection.setVisibility(View.GONE);
 
         progressBar.setMax(100);
 
@@ -87,6 +91,8 @@ public class WebActivity extends AppCompatActivity{
             public void onClick(View v) {
                 //postDataToServer();
                 url = txtUrl.getText().toString();
+
+                v.setFocusable(true);
 
                 webViewProxy(buildUrl(url));
 
@@ -171,12 +177,9 @@ public class WebActivity extends AppCompatActivity{
     public void webViewProxy(String webAdress){
 
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ONLY);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(false);
-
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(false);
         webView.setLongClickable(true);

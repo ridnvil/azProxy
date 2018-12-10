@@ -15,19 +15,20 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent">
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <EditText
                     android:id="@+id/editUrl"
-                    android:hint="URL"
-                    android:background="@drawable/border"
-                    android:inputType="textUri"
-                    android:textColor="@color/UriText"
-                    android:layout_weight="7"
-                    android:layout_marginRight="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="7"
+                    android:background="@drawable/border"
+                    android:hint="URL"
+                    android:inputType="textUri"
+                    android:textColor="@color/UriText" />
                 <ImageButton
                     android:id="@+id/stopBtn"
                     android:background="@drawable/border"
@@ -68,11 +69,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <WebView
-                    android:id="@+id/webView"
-                    android:layout_below="@+id/frameLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                android:id="@+id/webView"
+                android:layout_below="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
             </WebView>
+            <RelativeLayout
+                android:id="@+id/webViewNoConnection"
+                android:layout_below="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/UriText"
+                    android:text="Problems with the URL or Connection..!!"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

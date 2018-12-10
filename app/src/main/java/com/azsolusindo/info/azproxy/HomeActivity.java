@@ -1,7 +1,10 @@
 package com.azsolusindo.info.azproxy;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -39,10 +42,17 @@ public class HomeActivity extends AppCompatActivity {
         rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
         rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
 
+
+
         btnCon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                animateFab();
+
+                if (koneksi()==true){
+                    animateFab();
+                }else{
+                    Toast.makeText(HomeActivity.this, "No Connection Internet", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -62,7 +72,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-
         btnDisconnected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +81,15 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public boolean koneksi(){
+        ConnectivityManager cm = (ConnectivityManager) getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
     }
 
     private void animateFab(){
