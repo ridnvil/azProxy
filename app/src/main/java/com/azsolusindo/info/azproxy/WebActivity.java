@@ -40,6 +40,7 @@ import com.subisakah.hideqlib.ServerLog;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 

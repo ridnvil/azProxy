@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.ConnectivityManager;
+import android.net.LocalServerSocket;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
@@ -19,11 +20,12 @@ import android.widget.Toast;
 
 import com.subisakah.hideqlib.WebViewProxy;
 
+import java.io.IOException;
+
 public class HomeActivity extends AppCompatActivity {
     FloatingActionButton btnCon, btnConnected, btnDisconnected;
     Animation fabClose,fabOpen,rotateForward,rotateBackward;
     CheckBox checkDevice;
-    boolean isChecked = false;
     boolean isOpen = false;
 
     @Override
