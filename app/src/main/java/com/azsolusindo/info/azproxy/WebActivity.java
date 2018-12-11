@@ -6,8 +6,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,16 +35,20 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.HttpClientStack;
 import com.subisakah.hideqlib.ApiResponse;
 import com.subisakah.hideqlib.DeviceInformation;
 import com.subisakah.hideqlib.InfoKey;
 import com.subisakah.hideqlib.ServerLog;
+import com.subisakah.hideqlib.WebViewProxy;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -53,8 +59,7 @@ public class WebActivity extends AppCompatActivity{
     String url;
     LinearLayout layoutWebView;
     EditText txtUrl;
-    ImageButton btnGo, stopBtn;
-    ImageView logoUrl;
+    ImageButton btnGo, btnStop;
     ProgressBar progressBar;
     RelativeLayout webViewNoConnection;
     FrameLayout frameLayout;
@@ -66,7 +71,6 @@ public class WebActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         enableProxy();
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_web);
 
         layoutWebView = findViewById(R.id.layoutWebView);
@@ -76,12 +80,15 @@ public class WebActivity extends AppCompatActivity{
         webViewNoConnection = findViewById(R.id.webViewNoConnection);
         txtUrl = findViewById(R.id.editUrl);
         btnGo = findViewById(R.id.goBtn);
-        stopBtn = findViewById(R.id.stopBtn);
+        btnStop = findViewById(R.id.stopBtn);
+        btnGo.setImageResource(R.drawable.ic_search_black_24dp);
+        btnStop.setImageResource(R.drawable.ic_close_black_24dp);
 
         registerForContextMenu(webView);
 
         frameLayout.setVisibility(View.GONE);
         webViewNoConnection.setVisibility(View.GONE);
+        btnStop.setVisibility(View.GONE);
 
         progressBar.setMax(100);
 
@@ -90,23 +97,22 @@ public class WebActivity extends AppCompatActivity{
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OkHttpClient client = new OkHttpClient();
+                client.proxy();
+                Log.w("Coba", String.valueOf(client));
+
                 //postDataToServer();
                 url = txtUrl.getText().toString();
-
                 v.setFocusable(true);
-
                 webViewProxy(buildUrl(url));
-
                 Log.w("URL",buildUrl(url));
             }
-
         });
 
-        stopBtn.setOnClickListener(new View.OnClickListener() {
+        btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 webView.stopLoading();
-                frameLayout.setVisibility(View.GONE);
             }
         });
     }
@@ -166,8 +172,18 @@ public class WebActivity extends AppCompatActivity{
     }
 
     public void enableProxy(){
-        System.setProperty("http.proxyHost", host);
-        System.setProperty("http.proxyPort", port+"");
+//        System.setProperty("http.proxyHost", host);
+//        System.setProperty("http.proxyPort", port+"");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try {
+                //WebViewProxy.setEnabled(getApplicationContext(), host,port);
+                System.setProperty("http.proxyHost", host);
+                System.setProperty("http.proxyPort", port+"");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void disableProxy(){
@@ -198,6 +214,8 @@ public class WebActivity extends AppCompatActivity{
                 super.onPageStarted(view, url, favicon);
                 frameLayout.setVisibility(View.VISIBLE);
                 progressBar.setProgress(0);
+                btnStop.setVisibility(View.VISIBLE);
+                btnGo.setVisibility(View.GONE);
             }
 
             @Override
@@ -205,6 +223,8 @@ public class WebActivity extends AppCompatActivity{
                 super.onPageFinished(view, url);
                 frameLayout.setVisibility(View.GONE);
                 txtUrl.setText(url);
+                btnGo.setVisibility(View.VISIBLE);
+                btnStop.setVisibility(View.GONE);
             }
 
             @Override
@@ -220,6 +240,8 @@ public class WebActivity extends AppCompatActivity{
             public void onProgressChanged(WebView view, int progress){
                 frameLayout.setVisibility(View.VISIBLE);
                 progressBar.setProgress(progress);
+                btnGo.getDrawable();
+
             }
 
             public void onGeolocationPermissionsPromp(String origin, GeolocationPermissions.Callback callback){

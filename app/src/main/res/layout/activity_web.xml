@@ -29,23 +29,26 @@
                     android:hint="URL"
                     android:inputType="textUri"
                     android:textColor="@color/UriText" />
-                <ImageButton
-                    android:id="@+id/stopBtn"
-                    android:background="@drawable/border"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_close_black_24dp"
+
+                <FrameLayout
                     android:layout_width="wrap_content"
-                    android:clickable="true"
-                    android:layout_marginRight="5dp"
-                    android:layout_height="wrap_content" />
-                <ImageButton
-                    android:id="@+id/goBtn"
-                    android:background="@drawable/border"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_search_black_24dp"
-                    android:layout_width="wrap_content"
-                    android:clickable="true"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
+                    <ImageButton
+                        android:id="@+id/goBtn"
+                        android:background="@drawable/border"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:clickable="true"
+                        android:layout_height="wrap_content" />
+
+                    <ImageButton
+                        android:id="@+id/stopBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/border"
+                        android:clickable="true" />
+                </FrameLayout>
             </LinearLayout>
         </android.support.v7.widget.ActionBarContainer>
         <FrameLayout
