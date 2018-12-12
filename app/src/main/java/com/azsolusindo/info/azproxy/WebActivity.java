@@ -178,8 +178,8 @@ public class WebActivity extends AppCompatActivity{
     }
 
     public void webViewProxy(String webAdress){
-
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(false);
