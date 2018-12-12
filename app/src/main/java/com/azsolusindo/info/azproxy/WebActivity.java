@@ -97,10 +97,6 @@ public class WebActivity extends AppCompatActivity{
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OkHttpClient client = new OkHttpClient();
-                client.proxy();
-                Log.w("Coba", String.valueOf(client));
-
                 //postDataToServer();
                 url = txtUrl.getText().toString();
                 v.setFocusable(true);
@@ -172,18 +168,8 @@ public class WebActivity extends AppCompatActivity{
     }
 
     public void enableProxy(){
-//        System.setProperty("http.proxyHost", host);
-//        System.setProperty("http.proxyPort", port+"");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            try {
-                //WebViewProxy.setEnabled(getApplicationContext(), host,port);
-                System.setProperty("http.proxyHost", host);
-                System.setProperty("http.proxyPort", port+"");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        System.setProperty("http.proxyHost", host);
+        System.setProperty("http.proxyPort", port+"");
     }
 
     public void disableProxy(){
