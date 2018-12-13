@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     TextView txtV;
     Animation frombottom;
     Animation fromtop;
-    private static int SPALSH_TIME_OUT = 2000;
+    private static int SPALSH_TIME_OUT = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

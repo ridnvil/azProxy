@@ -6,8 +6,12 @@ import android.content.res.ColorStateList;
 import android.net.ConnectivityManager;
 import android.net.LocalServerSocket;
 import android.net.NetworkInfo;
+import android.net.TrafficStats;
 import android.os.Build;
+import android.os.Handler;
+import android.support.design.card.MaterialCardView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,16 +35,23 @@ import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
     IPService mService;
+    MaterialCardView cardTrafic;
     FloatingActionButton btnCon, btnConnected, btnDisconnected;
     Animation fabClose,fabOpen,rotateForward,rotateBackward;
     CheckBox checkDevice;
     TextView ipPublic;
     boolean isOpen = false;
+    private Handler mHandler = new Handler();
+    private long mStartRX = 0;
+    private long mStartTX = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        mStartRX = TrafficStats.getTotalRxBytes();
+        mStartTX = TrafficStats.getMobileTxBytes();
 
         mService = Common.getIPService();
         btnCon = findViewById(R.id.btnConnect);
@@ -48,12 +59,29 @@ public class HomeActivity extends AppCompatActivity {
         btnDisconnected = findViewById(R.id.btnDisconnected);
         checkDevice = findViewById(R.id.checkDevice);
         ipPublic = findViewById(R.id.txtViewIpPublic);
+        cardTrafic = findViewById(R.id.traficCard);
 
         fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
 
         rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
         rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
+
+        if (mStartRX == TrafficStats.UNSUPPORTED || mStartTX == TrafficStats.UNSUPPORTED){
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("Warning!");
+            alert.setMessage("Do not support device");
+            alert.show();
+        }else {
+            mHandler.postDelayed(mRunnable, 1000);
+        }
+
+        cardTrafic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WorkerViewActivity();
+            }
+        });
 
         btnCon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +123,43 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
+    private final Runnable mRunnable = new Runnable() {
+        public void run() {
+            TextView RX = findViewById(R.id.RX);
+            TextView TX = findViewById(R.id.TX);
+            long rxBytes = TrafficStats.getTotalRxBytes() - mStartRX;
+            RX.setText(Long.toString(rxBytes)+" Bytes");
+            if (rxBytes>1024){
+                long rxKByte = rxBytes/1024;
+                RX.setText(Long.toString(rxKByte)+ " KB");
+                if (rxKByte>1024){
+                    long rxMByte = rxKByte/1024;
+                    RX.setText(Long.toString(rxMByte)+" MB");
+                    if (rxMByte>1024){
+                        long rxGByte = rxMByte/1024;
+                        RX.setText(Long.toString(rxGByte)+" GB");
+                    }
+                }
+            }
+
+            long txBytes = TrafficStats.getTotalTxBytes() - mStartTX;
+            TX.setText(Long.toString(txBytes)+" Bytes");
+            if (txBytes>1024){
+                long txKByte = txBytes/1024;
+                TX.setText(Long.toString(txKByte)+" KB");
+                if (txKByte>1024){
+                    long txMByte = txKByte/1024;
+                    TX.setText(Long.toString(txMByte)+" MB");
+                    if (txMByte>1024){
+                        long txGByte = txMByte/1024;
+                        TX.setText(Long.toString(txGByte)+" GB");
+                    }
+                }
+            }
+            mHandler.postDelayed(mRunnable, 1000);
+        }
+    };
 
     private void getIP(String query){
         mService.getPublicIP(query).enqueue(new Callback<publicIP>() {
