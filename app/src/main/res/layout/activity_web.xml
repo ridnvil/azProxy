@@ -4,14 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:scrollbars="vertical"
     tools:context=".WebActivity">
 
     <LinearLayout
-        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:isScrollContainer="true"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.v7.widget.ActionBarContainer
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_height="wrap_content"
             android:layout_width="match_parent">
             <LinearLayout
@@ -27,6 +29,7 @@
                     android:layout_weight="7"
                     android:background="@drawable/border"
                     android:hint="URL"
+                    android:textSize="15sp"
                     android:inputType="textUri"
                     android:textColor="@color/UriText" />
 
@@ -50,7 +53,7 @@
                         android:clickable="true" />
                 </FrameLayout>
             </LinearLayout>
-        </android.support.v7.widget.ActionBarContainer>
+        </LinearLayout>
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"

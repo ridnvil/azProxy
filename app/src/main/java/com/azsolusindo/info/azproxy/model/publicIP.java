@@ -8,9 +8,15 @@ public class publicIP {
     @Expose
     private String query;
 
+    @SerializedName("country")
+    @Expose
+    private String country;
+
     public String getQuery(){
         return query;
     }
+
+    public String getCountry(){ return country; }
 
     public String toString(){
         return "IP{"+"query='"+query+'}';
