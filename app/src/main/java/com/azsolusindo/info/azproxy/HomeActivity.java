@@ -1,33 +1,28 @@
 package com.azsolusindo.info.azproxy;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.ConnectivityManager;
-import android.net.LocalServerSocket;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
-import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.card.MaterialCardView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.azsolusindo.info.azproxy.model.publicIP;
 import com.azsolusindo.info.azproxy.remote.IPService;
-import com.subisakah.hideqlib.WebViewProxy;
-
-import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,6 +62,9 @@ public class HomeActivity extends AppCompatActivity {
         rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
         rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
 
+        String IP = ipPublic.getText().toString().trim();
+        getIP(IP);
+
         if (mStartRX == TrafficStats.UNSUPPORTED || mStartTX == TrafficStats.UNSUPPORTED){
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setTitle("Warning!");
@@ -87,10 +85,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (koneksi()==true){
+                if (connectionNet()){
                     animateFab();
-                    String IP = ipPublic.getText().toString().trim();
-                    getIP(IP);
                 }else{
                     Toast.makeText(HomeActivity.this, "No Connection Internet", Toast.LENGTH_SHORT).show();
                 }
@@ -125,6 +121,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private final Runnable mRunnable = new Runnable() {
+        @SuppressLint("SetTextI18n")
         public void run() {
             TextView RX = findViewById(R.id.RX);
             TextView TX = findViewById(R.id.TX);
@@ -164,18 +161,19 @@ public class HomeActivity extends AppCompatActivity {
     private void getIP(String query){
         mService.getPublicIP(query).enqueue(new Callback<publicIP>() {
             @Override
-            public void onResponse(Call<publicIP> call, Response<publicIP> response) {
+            public void onResponse(@NonNull Call<publicIP> call, @NonNull Response<publicIP> response) {
+                assert response.body() != null;
                 ipPublic.setText(response.body().getQuery());
             }
 
             @Override
-            public void onFailure(Call<publicIP> call, Throwable t) {
+            public void onFailure(@NonNull Call<publicIP> call, Throwable t) {
 
             }
         });
     }
 
-    public boolean koneksi(){
+    public boolean connectionNet(){
         ConnectivityManager cm = (ConnectivityManager) getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnectedOrConnecting()) {
@@ -186,14 +184,12 @@ public class HomeActivity extends AppCompatActivity {
 
     private void animateFab(){
         if (isOpen){
-            btnCon.startAnimation(rotateForward);
             btnConnected.startAnimation(fabClose);
             btnDisconnected.startAnimation(fabClose);
             btnConnected.setClickable(false);
             btnDisconnected.setClickable(false);
             isOpen=false;
         }else {
-            btnCon.startAnimation(rotateForward);
             btnConnected.startAnimation(fabOpen);
             btnDisconnected.startAnimation(fabOpen);
             btnConnected.setClickable(true);

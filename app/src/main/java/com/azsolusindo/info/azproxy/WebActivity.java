@@ -152,8 +152,6 @@ public class WebActivity extends AppCompatActivity{
 
         if (webView.canGoForward()){
             webView.goForward();
-        }else{
-
         }
     }
 
@@ -177,6 +175,7 @@ public class WebActivity extends AppCompatActivity{
         System.setProperty("http.proxyPort", "");
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     public void webViewProxy(String webAdress){
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
