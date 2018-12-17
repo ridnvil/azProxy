@@ -8,6 +8,7 @@
     tools:context=".HomeActivity">
 
     <LinearLayout
+        android:visibility="invisible"
         android:layout_marginTop="50dp"
         android:padding="10dp"
         android:layout_gravity="center"
@@ -29,7 +30,6 @@
                 <android.support.design.card.MaterialCardView
                     android:layout_margin="5dp"
                     android:minHeight="60dp"
-                    android:elevation="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <LinearLayout
@@ -58,7 +58,6 @@
                 <android.support.design.card.MaterialCardView
                     android:layout_margin="5dp"
                     android:minHeight="60dp"
-                    android:elevation="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <LinearLayout

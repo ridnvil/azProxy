@@ -1,41 +1,32 @@
 package com.azsolusindo.info.azproxy;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.ProxyInfo;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
 import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.GeolocationPermissions;
-import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.android.volley.toolbox.HttpClientStack;
 import com.subisakah.hideqlib.ApiResponse;
 import com.subisakah.hideqlib.DeviceInformation;
 import com.subisakah.hideqlib.InfoKey;
@@ -47,8 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-
-import okhttp3.OkHttpClient;
+import java.util.Properties;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -65,11 +55,20 @@ public class WebActivity extends AppCompatActivity{
     FrameLayout frameLayout;
     String LoIP, OS, Brow, DeviceName;
     Map<String, String> params = new HashMap<>();
+    private Context appContext;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        enableProxy();
+        //enableProxy(host,port);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ProxyInfo proxy = ProxyInfo.buildDirectProxy(host,port);
+            Log.w("Coba", String.valueOf(ProxyInfo.buildDirectProxy(host,port)));
+            proxy.getHost();
+            proxy.getPort();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
 
@@ -83,6 +82,7 @@ public class WebActivity extends AppCompatActivity{
         btnStop = findViewById(R.id.stopBtn);
         btnGo.setImageResource(R.drawable.ic_search_black_24dp);
         btnStop.setImageResource(R.drawable.ic_close_black_24dp);
+        appContext = webView.getContext().getApplicationContext();
 
         registerForContextMenu(webView);
 
@@ -165,14 +165,18 @@ public class WebActivity extends AppCompatActivity{
         }
     }
 
-    public void enableProxy(){
-        System.setProperty("http.proxyHost", host);
-        System.setProperty("http.proxyPort", port+"");
+    public void enableProxy(String hostP, int portP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try {
+                WebViewProxy.setEnabled(appContext,hostP,portP);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void disableProxy(){
-        System.setProperty("http.proxyHost", "");
-        System.setProperty("http.proxyPort", "");
+        System.setProperty("http.nonProxyHosts", "");
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -315,5 +319,4 @@ public class WebActivity extends AppCompatActivity{
             getWindow().getDecorView().setSystemUiVisibility(3846);
         }
     }
-
 }

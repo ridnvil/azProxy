@@ -74,6 +74,8 @@ public class HomeActivity extends AppCompatActivity {
             mHandler.postDelayed(mRunnable, 1000);
         }
 
+        cardTrafic.setVisibility(View.INVISIBLE);
+
         cardTrafic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,7 +165,11 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<publicIP> call, @NonNull Response<publicIP> response) {
                 assert response.body() != null;
-                ipPublic.setText(response.body().getQuery());
+                if (response.body() == null){
+                    ipPublic.setText("Error IP");
+                }else{
+                    ipPublic.setText(response.body().getQuery());
+                }
             }
 
             @Override
