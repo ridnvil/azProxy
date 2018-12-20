@@ -53,8 +53,6 @@ import static android.net.Proxy.PROXY_CHANGE_ACTION;
 
 public class WebActivity extends AppCompatActivity{
     WebView webView;
-    static String host = "139.162.44.129";
-    static int port = 80;
     String url;
     LinearLayout layoutWebView;
     EditText txtUrl;
@@ -68,7 +66,7 @@ public class WebActivity extends AppCompatActivity{
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ProxySettings.setProxy(getApplicationContext(),host,port);
+        //ProxySettings.setProxy(getApplicationContext(),host,port);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
@@ -100,6 +98,9 @@ public class WebActivity extends AppCompatActivity{
 
                 //postDataToServer();
                 url = txtUrl.getText().toString();
+
+
+
                 CeckConnectivity(buildUrl(url));
                 v.setFocusable(true);
 
@@ -119,8 +120,6 @@ public class WebActivity extends AppCompatActivity{
         ConnectivityManager cm = (ConnectivityManager) getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            ProxyUtils.setProxy(webView,host,port,getClass());
-            //webView.loadUrl("https://www.reddit.com");
             webViewProxy(urladd);
         } else {
             webView.setVisibility(View.GONE);
@@ -169,24 +168,8 @@ public class WebActivity extends AppCompatActivity{
         }
     }
 
-    public void enableProxy(String hostP, int portP){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            try {
-                WebViewProxy.setEnabled(getApplicationContext(),hostP,portP);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void disableProxy(){
-        System.setProperty("http.nonProxyHosts", "");
-    }
-
     @SuppressLint("SetJavaScriptEnabled")
     public void webViewProxy(String webAdress){
-        ProxyUtils.setProxy(webView,host,port,MyWebView.class);
-
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
@@ -222,12 +205,6 @@ public class WebActivity extends AppCompatActivity{
                 txtUrl.setText(url);
                 btnGo.setVisibility(View.VISIBLE);
                 btnStop.setVisibility(View.GONE);
-            }
-
-            @androidx.annotation.Nullable
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                return super.shouldInterceptRequest(view, request);
             }
         });
 

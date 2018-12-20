@@ -7,13 +7,18 @@ import android.content.res.ColorStateList;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
+import android.net.wifi.hotspot2.pps.HomeSp;
+import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.card.MaterialCardView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,19 +35,25 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
+    static String host1 = "139.162.44.129";
+    static int port1 = 80;
+    static String host2 = "";
+    static int port2 = 8080;
     IPService mService;
     MaterialCardView cardTrafic;
     FloatingActionButton btnCon, btnConnected, btnDisconnected;
     Animation fabClose,fabOpen,rotateForward,rotateBackward;
-    CheckBox checkDevice, showIP, showTraffic;
+    CheckBox checkDevice, showIP, showTraffic, useProxy;
     TextView ipPublic, infoIP;
     boolean isOpen = false;
     private Handler mHandler = new Handler();
     private long mStartRX = 0;
     private long mStartTX = 0;
+    boolean proxyActiv = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -59,6 +70,9 @@ public class HomeActivity extends AppCompatActivity {
         ipPublic = findViewById(R.id.txtViewIpPublic);
         infoIP = findViewById(R.id.tvInfoIP);
         cardTrafic = findViewById(R.id.traficCard);
+        useProxy = findViewById(R.id.checkUseProxy);
+
+
 
         fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
@@ -149,6 +163,41 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+        Log.w("Coba On Create", String.valueOf(savedInstanceState));
+    }
+
+    @Override
+    protected void onResume() {
+        ProxySettings.setProxy(getApplicationContext(),host1,port1);
+        super.onResume();
+        Log.w("Coba On Resume", "onResume()");
+        //System.setProperty("http.ProxyHosts", "");
+
+        useProxy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (useProxy.isChecked()){
+                    disebleProxy(host2,port2);
+                }else{
+                    //ProxyActiv(false);
+                }
+            }
+        });
+    }
+
+    private boolean ProxyActiv(boolean prx){
+        if(prx){
+            return ProxySettings.setProxy(getApplicationContext(),host1,port1);
+        }
+        return false;
+    }
+
+    private void disebleProxy(String host, int port){
+        System.setProperty("http.proxyHost", host);
+        System.setProperty("http.proxyPort", port + "");
+
+        System.setProperty("https.proxyHost", host);
+        System.setProperty("https.proxyPort", port + "");
     }
 
     private final Runnable mRunnable = new Runnable() {
@@ -210,6 +259,9 @@ public class HomeActivity extends AppCompatActivity {
 
     public boolean connectionNet(){
         ConnectivityManager cm = (ConnectivityManager) getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            cm.getDefaultProxy();
+        }
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnectedOrConnecting()) {
             return true;

@@ -7,6 +7,8 @@
     android:orientation="vertical"
     tools:context=".HomeActivity">
     <LinearLayout
+        android:gravity="center"
+        android:padding="5dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -20,9 +22,13 @@
             android:text="Show Traffic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <CheckBox
+            android:id="@+id/checkUseProxy"
+            android:text="Proxy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
     <LinearLayout
-        android:visibility="invisible"
         android:layout_marginTop="50dp"
         android:padding="10dp"
         android:layout_gravity="center"
@@ -32,6 +38,7 @@
         <android.support.design.card.MaterialCardView
             android:layout_margin="5dp"
             android:id="@+id/traficCard"
+            android:visibility="invisible"
             android:elevation="5dp"
             android:clickable="true"
             android:layout_width="match_parent"
@@ -160,8 +167,8 @@
         android:layout_marginTop="15dp"
         android:gravity="center"
         android:padding="5dp">
-
         <CheckBox
+            android:enabled="false"
             android:id="@+id/checkDevice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
