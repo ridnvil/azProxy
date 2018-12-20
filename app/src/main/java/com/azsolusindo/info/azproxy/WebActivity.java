@@ -68,7 +68,7 @@ public class WebActivity extends AppCompatActivity{
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        ProxySettings.setProxy(getApplicationContext(),host,port);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
@@ -92,15 +92,17 @@ public class WebActivity extends AppCompatActivity{
 
         progressBar.setMax(100);
 
-        CeckConnectivity();
+
         //postDataToServer();
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //postDataToServer();
                 url = txtUrl.getText().toString();
+                CeckConnectivity(buildUrl(url));
                 v.setFocusable(true);
-                webViewProxy(buildUrl(url));
+
                 Log.w("URL",buildUrl(url));
             }
         });
@@ -113,12 +115,13 @@ public class WebActivity extends AppCompatActivity{
         });
     }
 
-    private void CeckConnectivity(){
+    private void CeckConnectivity(String urladd){
         ConnectivityManager cm = (ConnectivityManager) getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            Log.i("Coba Proxy Utils", String.valueOf(ProxyUtils.setProxy(webView,host,port,getClass())));
-            webView.loadUrl("https://www.reddit.com/");
+            ProxyUtils.setProxy(webView,host,port,getClass());
+            //webView.loadUrl("https://www.reddit.com");
+            webViewProxy(urladd);
         } else {
             webView.setVisibility(View.GONE);
         }
@@ -182,6 +185,7 @@ public class WebActivity extends AppCompatActivity{
 
     @SuppressLint("SetJavaScriptEnabled")
     public void webViewProxy(String webAdress){
+        ProxyUtils.setProxy(webView,host,port,MyWebView.class);
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
