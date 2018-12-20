@@ -8,7 +8,10 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.ProxyInfo;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +20,10 @@ import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.GeolocationPermissions;
+import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
@@ -36,11 +42,14 @@ import com.subisakah.hideqlib.WebViewProxy;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.Proxy;
+import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
+
+import okhttp3.OkHttpClient;
 
 import static android.app.PendingIntent.getActivity;
+import static android.net.Proxy.PROXY_CHANGE_ACTION;
 
 public class WebActivity extends AppCompatActivity{
     WebView webView;
@@ -55,19 +64,11 @@ public class WebActivity extends AppCompatActivity{
     FrameLayout frameLayout;
     String LoIP, OS, Brow, DeviceName;
     Map<String, String> params = new HashMap<>();
-    private Context appContext;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //enableProxy(host,port);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ProxyInfo proxy = ProxyInfo.buildDirectProxy(host,port);
-            Log.w("Coba", String.valueOf(ProxyInfo.buildDirectProxy(host,port)));
-            proxy.getHost();
-            proxy.getPort();
-        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
@@ -82,7 +83,6 @@ public class WebActivity extends AppCompatActivity{
         btnStop = findViewById(R.id.stopBtn);
         btnGo.setImageResource(R.drawable.ic_search_black_24dp);
         btnStop.setImageResource(R.drawable.ic_close_black_24dp);
-        appContext = webView.getContext().getApplicationContext();
 
         registerForContextMenu(webView);
 
@@ -93,7 +93,7 @@ public class WebActivity extends AppCompatActivity{
         progressBar.setMax(100);
 
         CeckConnectivity();
-
+        //postDataToServer();
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,7 +117,8 @@ public class WebActivity extends AppCompatActivity{
         ConnectivityManager cm = (ConnectivityManager) getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            webView.loadUrl("https://www.google.com/");
+            Log.i("Coba Proxy Utils", String.valueOf(ProxyUtils.setProxy(webView,host,port,getClass())));
+            webView.loadUrl("https://www.reddit.com/");
         } else {
             webView.setVisibility(View.GONE);
         }
@@ -168,7 +169,7 @@ public class WebActivity extends AppCompatActivity{
     public void enableProxy(String hostP, int portP){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             try {
-                WebViewProxy.setEnabled(appContext,hostP,portP);
+                WebViewProxy.setEnabled(getApplicationContext(),hostP,portP);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -181,6 +182,7 @@ public class WebActivity extends AppCompatActivity{
 
     @SuppressLint("SetJavaScriptEnabled")
     public void webViewProxy(String webAdress){
+
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
@@ -198,8 +200,10 @@ public class WebActivity extends AppCompatActivity{
         });
 
         webView.setWebViewClient(new WebViewClient(){
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+
                 super.onPageStarted(view, url, favicon);
                 frameLayout.setVisibility(View.VISIBLE);
                 progressBar.setProgress(0);
@@ -216,11 +220,10 @@ public class WebActivity extends AppCompatActivity{
                 btnStop.setVisibility(View.GONE);
             }
 
+            @androidx.annotation.Nullable
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String uri) {
-                //return super.shouldOverrideUrlLoading(view, uri);
-                view.loadUrl(uri);
-                return true;
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                return super.shouldInterceptRequest(view, request);
             }
         });
 
@@ -233,6 +236,12 @@ public class WebActivity extends AppCompatActivity{
 
             }
 
+            @Override
+            public void onPermissionRequest(PermissionRequest request) {
+                super.onPermissionRequest(request);
+                Log.w("Coba", String.valueOf(request));
+            }
+
             public void onGeolocationPermissionsPromp(String origin, GeolocationPermissions.Callback callback){
                 callback.invoke(origin, true, false);
             }
@@ -240,6 +249,7 @@ public class WebActivity extends AppCompatActivity{
 
         webView.setVerticalScrollBarEnabled(false);
         webView.loadUrl(webAdress);
+
     }
 
 

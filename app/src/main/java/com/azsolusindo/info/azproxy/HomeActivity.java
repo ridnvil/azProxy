@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,8 +34,8 @@ public class HomeActivity extends AppCompatActivity {
     MaterialCardView cardTrafic;
     FloatingActionButton btnCon, btnConnected, btnDisconnected;
     Animation fabClose,fabOpen,rotateForward,rotateBackward;
-    CheckBox checkDevice;
-    TextView ipPublic;
+    CheckBox checkDevice, showIP, showTraffic;
+    TextView ipPublic, infoIP;
     boolean isOpen = false;
     private Handler mHandler = new Handler();
     private long mStartRX = 0;
@@ -53,7 +54,10 @@ public class HomeActivity extends AppCompatActivity {
         btnConnected = findViewById(R.id.btnConnected);
         btnDisconnected = findViewById(R.id.btnDisconnected);
         checkDevice = findViewById(R.id.checkDevice);
+        showIP = findViewById(R.id.checkShowIP);
+        showTraffic = findViewById(R.id.checkShowTraffic);
         ipPublic = findViewById(R.id.txtViewIpPublic);
+        infoIP = findViewById(R.id.tvInfoIP);
         cardTrafic = findViewById(R.id.traficCard);
 
         fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
@@ -62,8 +66,33 @@ public class HomeActivity extends AppCompatActivity {
         rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
         rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
 
-        String IP = ipPublic.getText().toString().trim();
-        getIP(IP);
+        showIP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (showIP.isChecked()){
+                    String IP = ipPublic.getText().toString().trim();
+                    getIP(IP);
+
+                    ipPublic.setVisibility(View.VISIBLE);
+                    infoIP.setVisibility(View.VISIBLE);
+                }else{
+                    ipPublic.setVisibility(View.GONE);
+                    infoIP.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        showTraffic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (showTraffic.isChecked()){
+                    cardTrafic.setVisibility(View.VISIBLE);
+                }else{
+                    cardTrafic.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
 
         if (mStartRX == TrafficStats.UNSUPPORTED || mStartTX == TrafficStats.UNSUPPORTED){
             AlertDialog.Builder alert = new AlertDialog.Builder(this);

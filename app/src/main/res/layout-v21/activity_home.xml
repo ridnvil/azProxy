@@ -6,7 +6,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".HomeActivity">
-
+    <LinearLayout
+        android:gravity="center"
+        android:padding="5dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <CheckBox
+            android:id="@+id/checkShowIP"
+            android:text="Show your IP Public"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <CheckBox
+            android:id="@+id/checkShowTraffic"
+            android:text="Show Traffic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <LinearLayout
         android:layout_marginTop="50dp"
         android:padding="10dp"
@@ -17,11 +33,11 @@
         <android.support.design.card.MaterialCardView
             android:layout_margin="5dp"
             android:id="@+id/traficCard"
-            android:elevation="10dp"
+            android:visibility="invisible"
+            android:elevation="5dp"
             android:clickable="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="true">
+            android:layout_height="wrap_content">
             <LinearLayout
                 android:layout_margin="10dp"
                 android:orientation="horizontal"
@@ -30,7 +46,6 @@
                 <android.support.design.card.MaterialCardView
                     android:layout_margin="5dp"
                     android:minHeight="60dp"
-                    android:elevation="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <LinearLayout
@@ -59,7 +74,6 @@
                 <android.support.design.card.MaterialCardView
                     android:layout_margin="5dp"
                     android:minHeight="60dp"
-                    android:elevation="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <LinearLayout
@@ -148,8 +162,8 @@
         android:layout_marginTop="15dp"
         android:gravity="center"
         android:padding="5dp">
-
         <CheckBox
+            android:enabled="false"
             android:id="@+id/checkDevice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -163,7 +177,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
+            android:id="@+id/tvInfoIP"
             android:gravity="center"
+            android:visibility="invisible"
             android:text="Your IP Public"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -171,6 +187,7 @@
             android:textSize="20sp"
             android:id="@+id/txtViewIpPublic"
             android:gravity="center"
+            android:visibility="invisible"
             android:text="-"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

@@ -7,8 +7,8 @@
     android:scrollbars="vertical"
     tools:context=".WebActivity">
 
-    <LinearLayout
-        android:isScrollContainer="true"
+    <android.support.v7.widget.LinearLayoutCompat
+        android:isScrollContainer="false"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -93,5 +93,5 @@
                     android:layout_height="match_parent" />
             </RelativeLayout>
         </LinearLayout>
-    </LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
 </android.support.constraint.ConstraintLayout>

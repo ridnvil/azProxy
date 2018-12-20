@@ -6,7 +6,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".HomeActivity">
-
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <CheckBox
+            android:id="@+id/checkShowIP"
+            android:text="Show your IP Public"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <CheckBox
+            android:id="@+id/checkShowTraffic"
+            android:text="Show Traffic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <LinearLayout
         android:visibility="invisible"
         android:layout_marginTop="50dp"
@@ -161,7 +175,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
+            android:id="@+id/tvInfoIP"
             android:gravity="center"
+            android:visibility="invisible"
             android:text="Your IP Public"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -169,6 +185,7 @@
             android:textSize="20sp"
             android:id="@+id/txtViewIpPublic"
             android:gravity="center"
+            android:visibility="invisible"
             android:text="-"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
