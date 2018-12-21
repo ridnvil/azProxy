@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -183,6 +184,12 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onContextMenuClosed(Menu menu) {
+        super.onContextMenuClosed(menu);
+        finish();
     }
 
     private boolean ProxyActiv(boolean prx){
