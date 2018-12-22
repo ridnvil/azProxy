@@ -99,8 +99,6 @@ public class WebActivity extends AppCompatActivity{
                 //postDataToServer();
                 url = txtUrl.getText().toString();
 
-
-
                 CeckConnectivity(buildUrl(url));
                 v.setFocusable(true);
 

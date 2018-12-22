@@ -19,9 +19,9 @@ public class WorkerActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent homeIntent = new Intent(WorkerActivity.this, WebActivity.class);
+                Intent homeIntent = new Intent(WorkerActivity.this, WebProxyActivity.class);
                 startActivity(homeIntent);
-                finish();
+                //finish();
             }
         },SPALSH_TIME_OUT);
     }
