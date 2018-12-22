@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical"
+    tools:context=".WebProxyActivity">
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:isScrollContainer="false"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/editUrl2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="7"
+                    android:background="@drawable/border"
+                    android:hint="URL"
+                    android:textSize="15sp"
+                    android:inputType="textUri"
+                    android:textColor="@color/UriText" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageButton
+                        android:id="@+id/goBtn2"
+                        android:background="@drawable/border"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:clickable="true"
+                        android:layout_height="wrap_content" />
+                    <ImageButton
+                        android:id="@+id/stopBtn2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/border"
+                        android:clickable="true" />
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/frameLayout2"
+            android:layout_width="match_parent"
+            android:background="@android:color/transparent"
+            android:layout_height="5dp"
+            android:orientation="vertical">
+            <ProgressBar
+                android:id="@+id/progressBar2"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:progressDrawable="@drawable/custom_progress"
+                android:layout_marginTop="-3dp"/>
+
+        </FrameLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <WebView
+                android:id="@+id/webView2"
+                android:layout_below="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </WebView>
+            <RelativeLayout
+                android:id="@+id/webViewNoConnection"
+                android:layout_below="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/UriText"
+                    android:text="Problems with the URL or Connection..!!"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
+</android.support.constraint.ConstraintLayout>
