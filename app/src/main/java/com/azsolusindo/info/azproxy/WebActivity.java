@@ -52,6 +52,9 @@ import static android.app.PendingIntent.getActivity;
 import static android.net.Proxy.PROXY_CHANGE_ACTION;
 
 public class WebActivity extends AppCompatActivity{
+    static String host1 = "139.162.44.129";
+    static int port1 = 80;
+
     WebView webView;
     String url;
     LinearLayout layoutWebView;
@@ -67,6 +70,7 @@ public class WebActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //ProxySettings.setProxy(getApplicationContext(),host,port);
+        EnableProxy(host1,port1);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
@@ -112,6 +116,14 @@ public class WebActivity extends AppCompatActivity{
                 webView.stopLoading();
             }
         });
+    }
+
+    private void EnableProxy(String host, int port){
+        System.setProperty("http.proxyHost", host);
+        System.setProperty("http.proxyPort", port + "");
+
+        System.setProperty("https.proxyHost", host);
+        System.setProperty("https.proxyPort", port + "");
     }
 
     private void CeckConnectivity(String urladd){

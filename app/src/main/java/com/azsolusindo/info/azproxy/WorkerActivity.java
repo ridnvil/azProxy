@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 public class WorkerActivity extends AppCompatActivity {
     private static int SPALSH_TIME_OUT = 1000;
+    static String hostKantor = "116.0.5.195";
     static String host = "139.162.44.129";
     static int port = 80;
 
@@ -21,7 +22,7 @@ public class WorkerActivity extends AppCompatActivity {
             public void run() {
                 Intent homeIntent = new Intent(WorkerActivity.this, WebProxyActivity.class);
                 startActivity(homeIntent);
-                //finish();
+                finish();
             }
         },SPALSH_TIME_OUT);
     }

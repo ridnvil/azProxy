@@ -54,7 +54,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        EnableProxy(host1,port1);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -178,7 +178,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (useProxy.isChecked()){
-                    disebleProxy(host2,port2);
+                    DisebleProxy(host2,port2);
                 }else{
                     //ProxyActiv(false);
                 }
@@ -199,7 +199,15 @@ public class HomeActivity extends AppCompatActivity {
         return false;
     }
 
-    private void disebleProxy(String host, int port){
+    private void EnableProxy(String host, int port){
+        System.setProperty("http.proxyHost", host);
+        System.setProperty("http.proxyPort", port + "");
+
+        System.setProperty("https.proxyHost", host);
+        System.setProperty("https.proxyPort", port + "");
+    }
+
+    private void DisebleProxy(String host, int port){
         System.setProperty("http.proxyHost", host);
         System.setProperty("http.proxyPort", port + "");
 
