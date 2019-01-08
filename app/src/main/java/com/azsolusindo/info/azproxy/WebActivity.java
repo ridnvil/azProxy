@@ -69,8 +69,8 @@ public class WebActivity extends AppCompatActivity{
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //ProxySettings.setProxy(getApplicationContext(),host,port);
-        EnableProxy(host1,port1);
+//        ProxySettings.setProxy(getApplicationContext(),host1,port1);
+//        EnableProxy(host1,port1);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
@@ -99,12 +99,15 @@ public class WebActivity extends AppCompatActivity{
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                EnableProxy(host1,port1);
                 //postDataToServer();
                 url = txtUrl.getText().toString();
 
-                CeckConnectivity(buildUrl(url));
+                webViewProxy(buildUrl(url));
+//                CeckConnectivity(buildUrl(url));
                 v.setFocusable(true);
+
+                Log.w("Coba", Settings.System.NETWORK_PREFERENCE);
 
                 Log.w("URL",buildUrl(url));
             }
@@ -180,6 +183,7 @@ public class WebActivity extends AppCompatActivity{
 
     @SuppressLint("SetJavaScriptEnabled")
     public void webViewProxy(String webAdress){
+        webView.getSettings().setAllowContentAccess(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
@@ -187,20 +191,11 @@ public class WebActivity extends AppCompatActivity{
         webView.getSettings().setDisplayZoomControls(false);
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(false);
-        webView.setLongClickable(true);
-        webView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Log.w("Coba", "Ini Long Click");
-                return false;
-            }
-        });
 
         webView.setWebViewClient(new WebViewClient(){
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
                 super.onPageStarted(view, url, favicon);
                 frameLayout.setVisibility(View.VISIBLE);
                 progressBar.setProgress(0);

@@ -54,7 +54,6 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        EnableProxy(host1,port1);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -72,8 +71,6 @@ public class HomeActivity extends AppCompatActivity {
         infoIP = findViewById(R.id.tvInfoIP);
         cardTrafic = findViewById(R.id.traficCard);
         useProxy = findViewById(R.id.checkUseProxy);
-
-
 
         fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
